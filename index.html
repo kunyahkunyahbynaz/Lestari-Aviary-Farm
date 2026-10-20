@@ -1,3 +1,4 @@
+
 <!doctype html>
 <html lang="ms">
 <head>
@@ -8,141 +9,505 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Lestari Aviary">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="apple-touch-icon" href="icons/icon-192.png">
 <title>Lestari Aviary Farm</title>
 <style>
-:root{--green:#14532d;--green2:#166534;--mint:#dcfce7;--bg:#f3f7f2;--card:#fff;--ink:#17251b;--muted:#647067;--line:#dce5dc;--red:#b91c1c}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}
+:root{--green:#14532d;--mint:#dcfce7;--bg:#f3f7f2;--card:#fff;--ink:#17251b;--muted:#647067;--line:#dce5dc}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}
 header{background:linear-gradient(135deg,#14532d,#15803d);color:white;padding:22px 16px 20px;border-radius:0 0 24px 24px}
-.headrow{display:flex;align-items:center;gap:12px}.logo{width:48px;height:48px;border-radius:15px;background:#ffffff22;display:grid;place-items:center;font-size:28px}
-h1{font-size:21px;line-height:1.15;margin:0 0 4px}header p{margin:0;color:#dcfce7;font-size:13px}
-main{max-width:760px;margin:auto;padding:14px 12px 40px}.stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+.headrow{display:flex;align-items:center;gap:12px}
+.logo{width:48px;height:48px;border-radius:15px;background:#ffffff22;display:grid;place-items:center;font-size:28px}
+h1{font-size:21px;line-height:1.15;margin:0 0 4px}
+header p{margin:0;color:#dcfce7;font-size:13px}
+main{max-width:760px;margin:auto;padding:14px 12px 40px}
+.stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:14px}
 .stat,.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;box-shadow:0 2px 8px #102b1610}
-.stat span{font-size:12px;color:var(--muted);display:block}.stat strong{display:block;font-size:27px;margin-top:3px;color:var(--green)}
+.stat span{font-size:12px;color:var(--muted);display:block}
+.stat strong{display:block;font-size:27px;margin-top:3px;color:var(--green)}
 .tabs{display:flex;gap:7px;overflow:auto;margin:15px 0 12px;padding-bottom:2px}
 .tab{border:1px solid var(--line);background:white;color:var(--green);font-weight:700;border-radius:999px;padding:10px 13px;white-space:nowrap}
 .tab.active{background:var(--green);color:white;border-color:var(--green)}
-.panel{display:none}.panel.active{display:block}.sectiontitle{font-size:17px;margin:2px 0 12px}
+.panel{display:none}
+.panel.active{display:block}
+.sectiontitle{font-size:17px;margin:2px 0 12px}
 label{font-size:13px;font-weight:650;display:block;margin:0 0 6px}
-select,input[type=text],input[type=number]{width:100%;font:inherit;border:1px solid #cbd8cb;border-radius:11px;background:#fff;padding:12px;color:var(--ink);min-height:44px}
-.row{display:flex;gap:9px;align-items:center}.row>*{flex:1;min-width:0}.btn{border:0;border-radius:11px;padding:12px 14px;font-weight:750;font-size:14px;min-height:44px;cursor:pointer;background:var(--green);color:white}.btn.secondary{background:#e7f5e9;color:var(--green);border:1px solid #c8e8ce}.btn.light{background:#f1f5f1;color:#23382a;border:1px solid var(--line)}.btn.danger{background:#fee2e2;color:#991b1b}.btn.small{min-height:38px;padding:8px 13px;font-size:18px}
-.card{margin-bottom:12px}.field{margin-bottom:13px}.hint{color:var(--muted);font-size:12px;line-height:1.45;margin-top:6px}
+.row{display:flex;gap:9px;align-items:center}
+.row>*{flex:1;min-width:0}
+.btn{border:0;border-radius:11px;padding:12px 14px;font-weight:750;font-size:14px;min-height:44px;cursor:pointer;background:var(--green);color:white}
+.btn.secondary{background:#e7f5e9;color:var(--green);border:1px solid #c8e8ce}
+.btn.light{background:#f1f5f1;color:#23382a;border:1px solid var(--line)}
+.btn.danger{background:#fee2e2;color:#991b1b}
+select,input[type=text],input[type=file]{width:100%;font:inherit;border:1px solid #cbd8cb;border-radius:11px;background:#fff;padding:12px;color:var(--ink);min-height:44px}
+.field{margin-bottom:13px}
+.hint{color:var(--muted);font-size:12px;line-height:1.45;margin-top:6px}
 .boxgrid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:7px}
 .boxbtn{border:1px solid var(--line);border-radius:11px;background:white;padding:10px 3px;text-align:center;color:var(--ink);min-height:64px}
-.boxbtn strong{display:block;font-size:13px}.boxbtn span{font-size:12px;color:var(--muted)}.boxbtn.has{background:#dcfce7;border-color:#86c99b}.boxbtn.selected{outline:3px solid #15803d;outline-offset:1px}
-.countcontrol{display:flex;gap:10px;align-items:center}.countcontrol .btn{width:54px;flex:none;font-size:23px;padding:6px}.countnum{flex:1;text-align:center;font-size:26px;font-weight:800;border:1px solid var(--line);border-radius:12px;padding:8px;background:#f8fbf8}
-.listitem{padding:12px 0;border-bottom:1px solid var(--line)}.listitem:last-child{border-bottom:0}.listitem strong{display:block}.listitem small{color:var(--muted);line-height:1.5}.empty{padding:20px 10px;text-align:center;color:var(--muted);font-size:14px}
-.badge{display:inline-block;background:var(--mint);color:var(--green);padding:4px 8px;border-radius:999px;font-size:12px;font-weight:700}
+.boxbtn strong{display:block;font-size:13px}
+.boxbtn span{font-size:12px;color:var(--muted)}
+.boxbtn.has{background:#dcfce7;border-color:#86c99b}
+.boxbtn.selected{outline:3px solid #15803d;outline-offset:1px}
+.countcontrol{display:flex;gap:10px;align-items:center}
+.countcontrol .btn{width:54px;flex:none;font-size:23px;padding:6px}
+.countnum{flex:1;text-align:center;font-size:26px;font-weight:800;border:1px solid var(--line);border-radius:12px;padding:8px;background:#f8fbf8}
+.listitem{padding:12px 0;border-bottom:1px solid var(--line)}
+.listitem:last-child{border-bottom:0}
+.listitem strong{display:block}
+.listitem small{color:var(--muted);line-height:1.5}
+.empty{padding:20px 10px;text-align:center;color:var(--muted);font-size:14px}
 .notice{background:#fffbeb;border:1px solid #f3d99b;border-radius:12px;padding:11px;font-size:12px;line-height:1.45;margin-top:12px}
 footer{text-align:center;color:var(--muted);font-size:11px;padding:14px}
-@media(min-width:600px){.boxgrid{grid-template-columns:repeat(8,minmax(0,1fr))}.stats{grid-template-columns:repeat(3,1fr)}}
+@media(min-width:600px){.boxgrid{grid-template-columns:repeat(8,minmax(0,1fr))}.stats{grid-template-columns:repeat(4,1fr)}}
 </style>
 </head>
 <body>
-<header><div class="headrow"><div class="logo">🐦</div><div><h1>Lestari Aviary Farm</h1><p>Rekod anak budgie & pemindahan sarang</p></div></div></header>
+<header>
+  <div class="headrow">
+    <div class="logo">🐦</div>
+    <div>
+      <h1>Lestari Aviary Farm</h1>
+      <p>Rekod telur, anak budgie & pemindahan sarang</p>
+    </div>
+  </div>
+</header>
 <main>
 <div class="stats">
- <div class="stat"><span>Anak dalam 60 kotak</span><strong id="totalBoxes">0</strong></div>
- <div class="stat"><span>Anak dalam sarang besar</span><strong id="totalBig">0</strong></div>
- <div class="stat"><span>Jumlah anak direkod</span><strong id="totalAll">0</strong></div>
+  <div class="stat"><span>Jumlah telur dalam kotak</span><strong id="totalEggs">0</strong></div>
+  <div class="stat"><span>Anak dalam 60 kotak</span><strong id="totalBoxes">0</strong></div>
+  <div class="stat"><span>Anak dalam sarang besar</span><strong id="totalBig">0</strong></div>
+  <div class="stat"><span>Jumlah anak direkod</span><strong id="totalAll">0</strong></div>
 </div>
+
 <nav class="tabs">
- <button class="tab active" data-tab="boxes">Kotak sarang</button>
- <button class="tab" data-tab="move">Pindah anak</button>
- <button class="tab" data-tab="history">Sejarah</button>
- <button class="tab" data-tab="backup">Backup</button>
+  <button class="tab active" data-tab="boxes">Kotak sarang</button>
+  <button class="tab" data-tab="move">Pindah anak</button>
+  <button class="tab" data-tab="history">Sejarah</button>
+  <button class="tab" data-tab="backup">Backup</button>
 </nav>
+
 <section class="panel active" id="panel-boxes">
- <div class="card">
-  <h2 class="sectiontitle">Pilih kotak sarang</h2>
-  <div class="boxgrid" id="boxgrid"></div>
-  <p class="hint">Tekan mana-mana kotak untuk mengemas kini bilangan anak.</p>
- </div>
- <div class="card">
-  <h2 class="sectiontitle" id="boxHeading">Kotak N001</h2>
-  <div class="field"><label>Bilangan anak dalam kotak</label>
-   <div class="countcontrol"><button class="btn secondary" id="boxMinus" aria-label="Kurangkan">−</button><div class="countnum" id="boxCount">0</div><button class="btn secondary" id="boxPlus" aria-label="Tambah">+</button></div>
+  <div class="card">
+    <h2 class="sectiontitle">Pilih kotak sarang</h2>
+    <div class="boxgrid" id="boxgrid"></div>
+    <p class="hint">Tekan kotak untuk melihat atau mengemas kini rekodnya.</p>
   </div>
-  <div class="field"><label for="boxNote">Catatan (pilihan)</label><input id="boxNote" type="text" placeholder="Contoh: menetas minggu ini" maxlength="120"></div>
-  <button class="btn" id="saveBox" style="width:100%">Simpan rekod kotak</button>
- </div>
+
+  <div class="card">
+    <h2 class="sectiontitle" id="boxHeading">Kotak N001</h2>
+
+    <div class="field">
+      <label>Bilangan telur</label>
+      <div class="countcontrol">
+        <button class="btn secondary" id="eggMinus">−</button>
+        <div class="countnum" id="eggCount">0</div>
+        <button class="btn secondary" id="eggPlus">+</button>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Bilangan anak dalam kotak</label>
+      <div class="countcontrol">
+        <button class="btn secondary" id="boxMinus">−</button>
+        <div class="countnum" id="boxCount">0</div>
+        <button class="btn secondary" id="boxPlus">+</button>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Rekod telur menetas</label>
+      <div class="countcontrol">
+        <button class="btn secondary" id="hatchMinus">−</button>
+        <div class="countnum" id="hatchCount">0</div>
+        <button class="btn secondary" id="hatchPlus">+</button>
+      </div>
+      <p class="hint" id="hatchHint">Pilih bilangan telur yang menetas.</p>
+      <button class="btn secondary" id="recordHatch" style="width:100%;margin-top:8px">Rekod telur menetas</button>
+    </div>
+
+    <div class="field">
+      <label for="boxNote">Catatan (pilihan)</label>
+      <input id="boxNote" type="text" placeholder="Contoh: menetas minggu ini" maxlength="120">
+    </div>
+    <button class="btn" id="saveBox" style="width:100%">Simpan rekod kotak</button>
+  </div>
 </section>
+
 <section class="panel" id="panel-move">
- <div class="card">
-  <h2 class="sectiontitle">Pindahkan anak ke sarang besar</h2>
-  <div class="field"><label for="fromBox">Dari kotak</label><select id="fromBox"></select></div>
-  <div class="field"><label>Bilangan anak untuk dipindahkan</label><div class="countcontrol"><button class="btn secondary" id="moveMinus">−</button><div class="countnum" id="moveCount">0</div><button class="btn secondary" id="movePlus">+</button></div><p class="hint" id="availableHint">Anak tersedia: 0</p></div>
-  <button class="btn" id="doMove" style="width:100%">Pindahkan anak</button>
-  <p class="hint">Bilangan anak akan ditolak daripada kotak asal dan ditambah ke sarang besar secara automatik.</p>
- </div>
- <div class="card"><h2 class="sectiontitle">Sarang besar</h2><div style="font-size:34px;font-weight:800;color:var(--green)" id="bigCount">0</div><p class="hint">Jumlah anak yang telah dipindahkan dan berada di sarang besar.</p><div class="row"><button class="btn secondary" id="bigMinus">− 1</button><button class="btn secondary" id="bigPlus">+ 1</button></div><p class="hint">Gunakan butang ini hanya untuk pembetulan kiraan sarang besar.</p></div>
+  <div class="card">
+    <h2 class="sectiontitle">Pindahkan anak ke sarang besar</h2>
+    <div class="field">
+      <label for="fromBox">Dari kotak</label>
+      <select id="fromBox"></select>
+    </div>
+    <div class="field">
+      <label>Bilangan anak untuk dipindahkan</label>
+      <div class="countcontrol">
+        <button class="btn secondary" id="moveMinus">−</button>
+        <div class="countnum" id="moveCount">0</div>
+        <button class="btn secondary" id="movePlus">+</button>
+      </div>
+      <p class="hint" id="availableHint">Anak tersedia: 0</p>
+    </div>
+    <button class="btn" id="doMove" style="width:100%">Pindahkan anak</button>
+  </div>
+
+  <div class="card">
+    <h2 class="sectiontitle">Sarang besar</h2>
+    <div style="font-size:34px;font-weight:800;color:var(--green)" id="bigCount">0</div>
+    <p class="hint">Jumlah anak yang berada di sarang besar.</p>
+    <div class="row">
+      <button class="btn secondary" id="bigMinus">− 1</button>
+      <button class="btn secondary" id="bigPlus">+ 1</button>
+    </div>
+    <p class="hint">Gunakan untuk pembetulan kiraan sahaja.</p>
+  </div>
+
+  <div class="card">
+    <h2 class="sectiontitle">Rekod anak mati</h2>
+    <div class="field">
+      <label for="deathLocation">Lokasi anak</label>
+      <select id="deathLocation">
+        <option value="box">Dalam kotak sarang</option>
+        <option value="big">Dalam sarang besar</option>
+      </select>
+    </div>
+    <div class="field" id="deathBoxField">
+      <label for="deathBox">Pilih kotak</label>
+      <select id="deathBox"></select>
+    </div>
+    <div class="field">
+      <label>Bilangan anak mati</label>
+      <div class="countcontrol">
+        <button class="btn secondary" id="deathMinus">−</button>
+        <div class="countnum" id="deathCount">0</div>
+        <button class="btn secondary" id="deathPlus">+</button>
+      </div>
+    </div>
+    <button class="btn danger" id="recordDeath" style="width:100%">Rekod kematian</button>
+    <p class="hint">Kiraan anak akan berkurang mengikut lokasi. Rekod kematian disimpan dalam sejarah.</p>
+  </div>
 </section>
+
 <section class="panel" id="panel-history">
- <div class="card"><div class="row"><h2 class="sectiontitle" style="flex:1">Sejarah pemindahan</h2><button class="btn light" id="clearHistory" style="flex:none">Kosongkan</button></div><div id="historyList"></div></div>
+  <div class="card">
+    <div class="row">
+      <h2 class="sectiontitle" style="flex:1">Sejarah rekod</h2>
+      <button class="btn light" id="clearHistory" style="flex:none">Kosongkan</button>
+    </div>
+    <div id="historyList"></div>
+  </div>
 </section>
+
 <section class="panel" id="panel-backup">
- <div class="card"><h2 class="sectiontitle">Backup & pemulihan data</h2><p class="hint">Eksport fail JSON secara berkala supaya rekod boleh dipulihkan jika data pelayar hilang.</p>
-  <div class="field"><button class="btn" id="exportJson" style="width:100%">Muat turun backup JSON</button></div>
-  <div class="field"><button class="btn secondary" id="exportCsv" style="width:100%">Eksport kiraan kotak (CSV)</button></div>
-  <div class="field"><label for="importFile">Pulihkan backup JSON</label><input id="importFile" type="file" accept=".json,application/json"><p class="hint">Memulihkan backup akan menggantikan data semasa pada peranti ini.</p></div>
-  <button class="btn danger" id="resetAll" style="width:100%">Padam semua data</button>
-  <div class="notice"><strong>Penting:</strong> Data disimpan dalam pelayar/peranti ini. Buat backup JSON secara berkala dan simpan fail itu di tempat yang selamat.</div>
- </div>
+  <div class="card">
+    <h2 class="sectiontitle">Backup & pemulihan data</h2>
+    <p class="hint">Eksport fail JSON secara berkala supaya rekod boleh dipulihkan jika data pelayar hilang.</p>
+    <div class="field"><button class="btn" id="exportJson" style="width:100%">Muat turun backup JSON</button></div>
+    <div class="field"><button class="btn secondary" id="exportCsv" style="width:100%">Eksport kiraan kotak (CSV)</button></div>
+    <div class="field">
+      <label for="importFile">Pulihkan backup JSON</label>
+      <input id="importFile" type="file" accept=".json,application/json">
+      <p class="hint">Memulihkan backup akan menggantikan data semasa pada peranti ini.</p>
+    </div>
+    <button class="btn danger" id="resetAll" style="width:100%">Padam semua data</button>
+    <div class="notice"><strong>Penting:</strong> Data disimpan pada pelayar/peranti ini sahaja. Buat backup JSON secara berkala.</div>
+  </div>
 </section>
 <footer>Lestari Aviary Farm · Rekod anak budgie</footer>
 </main>
+
 <script>
 const KEY='lestari_aviary_farm_pwa_v1';
 const ids=Array.from({length:60},(_,i)=>'N'+String(i+1).padStart(3,'0'));
-const fresh=()=>({version:1,boxes:ids.map(id=>({id,n:0,note:''})),big:0,moves:[]});
-let data=load(), selected='N001', boxDraft=0, moveQty=0;
-function load(){try{let d=JSON.parse(localStorage.getItem(KEY));if(d&&Array.isArray(d.boxes)&&d.boxes.length===60)return d;}catch(e){}return fresh()}
-function save(){localStorage.setItem(KEY,JSON.stringify(data));render()}
+const fresh=()=>({version:2,boxes:ids.map(id=>({id,n:0,eggs:0,note:''})),big:0,moves:[],deaths:[],hatches:[]});
+let data=load(),selected='N001',boxDraft=0,eggDraft=0,hatchQty=0,moveQty=0,deathQty=0;
+
+function load(){
+  try{
+    const d=JSON.parse(localStorage.getItem(KEY));
+    if(d&&Array.isArray(d.boxes)&&d.boxes.length===60){
+      d.boxes=d.boxes.map((b,i)=>({
+        id:ids[i],
+        n:Math.max(0,Number(b.n)||0),
+        eggs:Math.max(0,Number(b.eggs)||0),
+        note:String(b.note||'')
+      }));
+      d.big=Math.max(0,Number(d.big)||0);
+      d.moves=Array.isArray(d.moves)?d.moves:[];
+      d.deaths=Array.isArray(d.deaths)?d.deaths:[];
+      d.hatches=Array.isArray(d.hatches)?d.hatches:[];
+      return d;
+    }
+  }catch(e){}
+  return fresh();
+}
+
+function save(){
+  localStorage.setItem(KEY,JSON.stringify(data));
+  render();
+}
 function box(id){return data.boxes.find(b=>b.id===id)}
 function totalBoxes(){return data.boxes.reduce((s,b)=>s+(Number(b.n)||0),0)}
-function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
-function render(){
- document.getElementById('totalBoxes').textContent=totalBoxes();
- document.getElementById('totalBig').textContent=data.big;
- document.getElementById('totalAll').textContent=totalBoxes()+data.big;
- document.getElementById('boxgrid').innerHTML=data.boxes.map(b=>`<button class="boxbtn ${b.n>0?'has':''} ${b.id===selected?'selected':''}" data-box="${b.id}"><strong>${b.id}</strong><span>${b.n} anak</span></button>`).join('');
- document.querySelectorAll('[data-box]').forEach(el=>el.onclick=()=>{selected=el.dataset.box;boxDraft=Number(box(selected).n)||0;document.getElementById('boxNote').value=box(selected).note||'';render();});
- document.getElementById('boxHeading').textContent='Kotak '+selected;
- document.getElementById('boxCount').textContent=boxDraft;
- document.getElementById('bigCount').textContent=data.big;
- document.getElementById('moveCount').textContent=moveQty;
- document.getElementById('availableHint').textContent='Anak tersedia dalam '+document.getElementById('fromBox').value+': '+(box(document.getElementById('fromBox').value)?.n||0);
- document.getElementById('fromBox').innerHTML=ids.map(id=>`<option value="${id}">${id} (${box(id).n} anak)</option>`).join('');
- document.getElementById('fromBox').value=selected;
- document.getElementById('availableHint').textContent='Anak tersedia dalam '+selected+': '+box(selected).n;
- document.getElementById('historyList').innerHTML=data.moves.length?data.moves.slice().reverse().map(m=>`<div class="listitem"><strong>${esc(m.qty)} anak · ${esc(m.from)} → Sarang besar</strong><small>${esc(m.date)}<br>Jumlah sarang besar selepas pindah: <b>${esc(m.bigAfter)}</b></small></div>`).join(''):'<div class="empty">Belum ada rekod pemindahan.</div>';
+function esc(s){
+  return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
-document.querySelectorAll('.tab').forEach(btn=>btn.onclick=()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x===btn));document.querySelectorAll('.panel').forEach(x=>x.classList.toggle('active',x.id==='panel-'+btn.dataset.tab));if(btn.dataset.tab==='move'){moveQty=0;render()}});
+
+function render(){
+  document.getElementById('totalBoxes').textContent=totalBoxes();
+  document.getElementById('totalEggs').textContent=data.boxes.reduce((s,b)=>s+(Number(b.eggs)||0),0);
+  document.getElementById('totalBig').textContent=data.big;
+  document.getElementById('totalAll').textContent=totalBoxes()+data.big;
+
+  document.getElementById('boxgrid').innerHTML=data.boxes.map(b=>
+    `<button class="boxbtn ${b.n>0?'has':''} ${b.id===selected?'selected':''}" data-box="${b.id}"><strong>${b.id}</strong><span>${b.eggs} telur · ${b.n} anak</span></button>`
+  ).join('');
+
+  document.querySelectorAll('[data-box]').forEach(el=>el.onclick=()=>{
+    selected=el.dataset.box;
+    boxDraft=box(selected).n;
+    eggDraft=box(selected).eggs;
+    hatchQty=0;
+    document.getElementById('boxNote').value=box(selected).note||'';
+    render();
+  });
+
+  document.getElementById('boxHeading').textContent='Kotak '+selected;
+  document.getElementById('boxCount').textContent=boxDraft;
+  document.getElementById('eggCount').textContent=eggDraft;
+  document.getElementById('hatchCount').textContent=hatchQty;
+  document.getElementById('hatchHint').textContent='Telur tersedia: '+box(selected).eggs+' · Anak dalam kotak: '+box(selected).n;
+  document.getElementById('bigCount').textContent=data.big;
+  document.getElementById('moveCount').textContent=moveQty;
+
+  document.getElementById('fromBox').innerHTML=ids.map(id=>
+    `<option value="${id}">${id} (${box(id).n} anak)</option>`
+  ).join('');
+  document.getElementById('fromBox').value=selected;
+  document.getElementById('availableHint').textContent='Anak tersedia dalam '+selected+': '+box(selected).n;
+
+  document.getElementById('deathBox').innerHTML=ids.map(id=>
+    `<option value="${id}">${id} (${box(id).n} anak)</option>`
+  ).join('');
+
+  const events=[
+    ...data.moves.map(m=>({...m,type:'move'})),
+    ...data.deaths.map(m=>({...m,type:'death'})),
+    ...data.hatches.map(m=>({...m,type:'hatch'}))
+  ].sort((a,b)=>(b.ts||0)-(a.ts||0));
+
+  document.getElementById('historyList').innerHTML=events.length
+    ?events.map(m=>m.type==='move'
+      ?`<div class="listitem"><strong>↗ ${esc(m.qty)} anak · ${esc(m.from)} → Sarang besar</strong><small>${esc(m.date)}<br>Jumlah sarang besar selepas pindah: <b>${esc(m.bigAfter)}</b></small></div>`
+      :m.type==='death'
+      ?`<div class="listitem"><strong style="color:#b91c1c">✕ ${esc(m.qty)} anak mati · ${esc(m.location==='big'?'Sarang besar':m.location)}</strong><small>${esc(m.date)}<br>Baki lokasi selepas rekod: <b>${esc(m.remaining)}</b></small></div>`
+      :`<div class="listitem"><strong>🐣 ${esc(m.qty)} telur menetas · ${esc(m.from)}</strong><small>${esc(m.date)}<br>Telur berbaki: <b>${esc(m.eggsAfter)}</b> · Anak dalam kotak: <b>${esc(m.chicksAfter)}</b></small></div>`
+    ).join('')
+    :'<div class="empty">Belum ada rekod.</div>';
+}
+
+document.querySelectorAll('.tab').forEach(btn=>btn.onclick=()=>{
+  document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x===btn));
+  document.querySelectorAll('.panel').forEach(x=>x.classList.toggle('active',x.id==='panel-'+btn.dataset.tab));
+  if(btn.dataset.tab==='move'){moveQty=0;render()}
+});
+
 document.getElementById('boxMinus').onclick=()=>{boxDraft=Math.max(0,boxDraft-1);render()};
 document.getElementById('boxPlus').onclick=()=>{boxDraft=Math.min(999,boxDraft+1);render()};
-document.getElementById('saveBox').onclick=()=>{box(selected).n=boxDraft;box(selected).note=document.getElementById('boxNote').value.trim();save();alert('Rekod '+selected+' disimpan.')};
-document.getElementById('fromBox').onchange=e=>{selected=e.target.value;moveQty=0;render()};
+document.getElementById('eggMinus').onclick=()=>{eggDraft=Math.max(0,eggDraft-1);render()};
+document.getElementById('eggPlus').onclick=()=>{eggDraft=Math.min(999,eggDraft+1);render()};
+
+document.getElementById('saveBox').onclick=()=>{
+  box(selected).n=boxDraft;
+  box(selected).eggs=eggDraft;
+  box(selected).note=document.getElementById('boxNote').value.trim();
+  save();
+  alert('Rekod '+selected+' disimpan.');
+};
+
+document.getElementById('hatchMinus').onclick=()=>{hatchQty=Math.max(0,hatchQty-1);render()};
+document.getElementById('hatchPlus').onclick=()=>{hatchQty=Math.min(box(selected).eggs,hatchQty+1);render()};
+
+document.getElementById('recordHatch').onclick=()=>{
+  const b=box(selected);
+  if(hatchQty<1){alert('Pilih bilangan telur yang menetas.');return}
+  if(hatchQty>b.eggs){alert('Bilangan telur tidak mencukupi.');return}
+  if(!confirm('Rekod '+hatchQty+' telur menetas dalam '+selected+'?'))return;
+  b.eggs-=hatchQty;
+  b.n+=hatchQty;
+  data.hatches.push({
+    date:new Date().toLocaleString('ms-MY'),
+    ts:Date.now(),
+    from:selected,
+    qty:hatchQty,
+    eggsAfter:b.eggs,
+    chicksAfter:b.n
+  });
+  eggDraft=b.eggs;
+  boxDraft=b.n;
+  hatchQty=0;
+  save();
+  alert('Telur berkurang dan bilangan anak bertambah.');
+};
+
+document.getElementById('fromBox').onchange=e=>{
+  selected=e.target.value;
+  moveQty=0;
+  render();
+};
 document.getElementById('moveMinus').onclick=()=>{moveQty=Math.max(0,moveQty-1);render()};
 document.getElementById('movePlus').onclick=()=>{moveQty=Math.min(999,moveQty+1);render()};
+
 document.getElementById('doMove').onclick=()=>{
- const from=document.getElementById('fromBox').value, b=box(from);
- if(moveQty<1){alert('Pilih bilangan anak lebih daripada 0.');return}
- if(moveQty>b.n){alert('Bilangan anak tidak mencukupi dalam '+from+'.');return}
- if(!confirm('Pindahkan '+moveQty+' anak dari '+from+' ke sarang besar?'))return;
- b.n-=moveQty;data.big+=moveQty;
- data.moves.push({date:new Date().toLocaleString('ms-MY'),from,qty:moveQty,bigAfter:data.big});
- selected=from;boxDraft=b.n;moveQty=0;save();alert('Pemindahan berjaya direkodkan.');
+  const from=document.getElementById('fromBox').value,b=box(from);
+  if(moveQty<1){alert('Pilih bilangan anak lebih daripada 0.');return}
+  if(moveQty>b.n){alert('Bilangan anak tidak mencukupi dalam '+from+'.');return}
+  if(!confirm('Pindahkan '+moveQty+' anak dari '+from+' ke sarang besar?'))return;
+  b.n-=moveQty;
+  data.big+=moveQty;
+  data.moves.push({
+    date:new Date().toLocaleString('ms-MY'),
+    ts:Date.now(),
+    from,
+    qty:moveQty,
+    bigAfter:data.big
+  });
+  selected=from;
+  boxDraft=b.n;
+  moveQty=0;
+  save();
+  alert('Pemindahan berjaya direkodkan.');
 };
-document.getElementById('bigMinus').onclick=()=>{if(data.big<1)return;if(!confirm('Kurangkan 1 anak daripada kiraan sarang besar?'))return;data.big--;save()};
+
+document.getElementById('bigMinus').onclick=()=>{
+  if(data.big<1)return;
+  if(!confirm('Kurangkan 1 anak daripada kiraan sarang besar?'))return;
+  data.big--;
+  save();
+};
 document.getElementById('bigPlus').onclick=()=>{data.big++;save()};
-function download(name,content,type){const blob=new Blob([content],{type}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000)}
-document.getElementById('exportJson').onclick=()=>download('backup-lestari-aviary-'+new Date().toISOString().slice(0,10)+'.json',JSON.stringify(data,null,2),'application/json');
-document.getElementById('exportCsv').onclick=()=>{let rows=[['Kotak','Bilangan anak','Catatan'],...data.boxes.map(b=>[b.id,b.n,b.note])];download('kiraan-kotak-lestari-aviary.csv',rows.map(r=>r.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(',')).join('\r\n'),'text/csv;charset=utf-8')};
-document.getElementById('importFile').onchange=async e=>{const f=e.target.files[0];if(!f)return;try{const d=JSON.parse(await f.text());if(!Array.isArray(d.boxes)||d.boxes.length!==60||typeof d.big!=='number'||!Array.isArray(d.moves))throw Error();if(!confirm('Gantikan semua data semasa dengan backup ini?'))return;data={version:1,boxes:d.boxes.map((b,i)=>({id:ids[i],n:Math.max(0,Number(b.n)||0),note:String(b.note||'')})),big:Math.max(0,Number(d.big)||0),moves:d.moves};selected='N001';boxDraft=0;moveQty=0;save();alert('Backup berjaya dipulihkan.')}catch(err){alert('Fail backup tidak sah atau rosak.')}e.target.value=''};
-document.getElementById('clearHistory').onclick=()=>{if(confirm('Kosongkan semua sejarah pemindahan? Kiraan anak tidak berubah.')){data.moves=[];save()}};
-document.getElementById('resetAll').onclick=()=>{if(confirm('AMARAN: Padam semua kiraan, sarang besar dan sejarah?')){if(confirm('Sahkan sekali lagi: semua data akan hilang kecuali jika ada backup.')){data=fresh();selected='N001';boxDraft=0;moveQty=0;save();alert('Semua data telah dikosongkan.')}}};
-document.getElementById('fromBox').innerHTML=ids.map(id=>`<option value="${id}">${id}</option>`).join('');
-boxDraft=box(selected).n;document.getElementById('boxNote').value=box(selected).note||'';render();
-if('serviceWorker' in navigator && location.protocol.startsWith('http'))window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js').catch(()=>{}));
+
+document.getElementById('deathLocation').onchange=e=>{
+  document.getElementById('deathBoxField').style.display=e.target.value==='box'?'block':'none';
+};
+document.getElementById('deathMinus').onclick=()=>{
+  deathQty=Math.max(0,deathQty-1);
+  document.getElementById('deathCount').textContent=deathQty;
+};
+document.getElementById('deathPlus').onclick=()=>{
+  deathQty=Math.min(999,deathQty+1);
+  document.getElementById('deathCount').textContent=deathQty;
+};
+
+document.getElementById('recordDeath').onclick=()=>{
+  if(deathQty<1){alert('Pilih bilangan anak mati lebih daripada 0.');return}
+  const loc=document.getElementById('deathLocation').value;
+  let target,locName;
+  if(loc==='big'){
+    target={get n(){return data.big},set n(v){data.big=v}};
+    locName='big';
+  }else{
+    locName=document.getElementById('deathBox').value;
+    target=box(locName);
+  }
+  if(deathQty>target.n){alert('Bilangan anak tidak mencukupi di lokasi tersebut.');return}
+  if(!confirm('Rekod '+deathQty+' anak mati di '+(locName==='big'?'sarang besar':locName)+'?'))return;
+  target.n-=deathQty;
+  data.deaths.push({
+    date:new Date().toLocaleString('ms-MY'),
+    ts:Date.now(),
+    location:locName,
+    qty:deathQty,
+    remaining:target.n
+  });
+  deathQty=0;
+  document.getElementById('deathCount').textContent='0';
+  save();
+  alert('Kematian direkodkan dan kiraan anak dikurangkan.');
+};
+
+function download(name,content,type){
+  const blob=new Blob([content],{type});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;
+  a.download=name;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url),1000);
+}
+
+document.getElementById('exportJson').onclick=()=>{
+  download('backup-lestari-aviary-'+new Date().toISOString().slice(0,10)+'.json',JSON.stringify(data,null,2),'application/json');
+};
+
+document.getElementById('exportCsv').onclick=()=>{
+  const rows=[['Kotak','Bilangan telur','Bilangan anak','Catatan'],...data.boxes.map(b=>[b.id,b.eggs,b.n,b.note])];
+  download(
+    'kiraan-kotak-lestari-aviary.csv',
+    rows.map(r=>r.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(',')).join('\r\n'),
+    'text/csv;charset=utf-8'
+  );
+};
+
+document.getElementById('importFile').onchange=async e=>{
+  const f=e.target.files[0];
+  if(!f)return;
+  try{
+    const d=JSON.parse(await f.text());
+    if(!Array.isArray(d.boxes)||d.boxes.length!==60||typeof d.big!=='number'||!Array.isArray(d.moves))throw Error();
+    if(!confirm('Gantikan semua data semasa dengan backup ini?'))return;
+    data={
+      version:2,
+      boxes:d.boxes.map((b,i)=>({
+        id:ids[i],
+        n:Math.max(0,Number(b.n)||0),
+        eggs:Math.max(0,Number(b.eggs)||0),
+        note:String(b.note||'')
+      })),
+      big:Math.max(0,Number(d.big)||0),
+      moves:d.moves,
+      deaths:Array.isArray(d.deaths)?d.deaths:[],
+      hatches:Array.isArray(d.hatches)?d.hatches:[]
+    };
+    selected='N001';
+    boxDraft=0;
+    eggDraft=0;
+    moveQty=0;
+    save();
+    alert('Backup berjaya dipulihkan.');
+  }catch(err){
+    alert('Fail backup tidak sah atau rosak.');
+  }
+  e.target.value='';
+};
+
+document.getElementById('clearHistory').onclick=()=>{
+  if(confirm('Kosongkan semua sejarah? Kiraan anak dan telur tidak berubah.')){
+    data.moves=[];
+    data.deaths=[];
+    data.hatches=[];
+    save();
+  }
+};
+
+document.getElementById('resetAll').onclick=()=>{
+  if(confirm('Padam semua kiraan, telur, sarang besar dan sejarah?')&&confirm('Sahkan sekali lagi: semua data akan hilang kecuali jika ada backup.')){
+    data=fresh();
+    selected='N001';
+    boxDraft=eggDraft=moveQty=hatchQty=0;
+    save();
+    alert('Semua data telah dikosongkan.');
+  }
+};
+
+boxDraft=box(selected).n;
+eggDraft=box(selected).eggs;
+document.getElementById('boxNote').value=box(selected).note||'';
+render();
+
+if('serviceWorker' in navigator&&location.protocol.startsWith('http')){
+  window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js').catch(()=>{}));
+}
 </script>
-</body></html>
+</body>
+</html>

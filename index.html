@@ -206,7 +206,11 @@ footer{text-align:center;font-size:11px;color:var(--muted);padding:16px}
 const KEY='lestari_aviary_farm_pwa_v1';
 const PHOTO_KEY='lestari_aviary_header_photo_v1';
 const IDS=Array.from({length:60},(_,i)=>'N'+String(i+1).padStart(3,'0'));
-function fresh(){return {version:5,boxes:IDS.map(id=>({id,n:0,eggs:0,note:''})),big:0,moves:[],deaths:[],hatches:[],unhatched:[],sales:[],adjustments:[]}}
+
+function fresh(){
+ return {version:5,boxes:IDS.map(id=>({id,n:0,eggs:0,note:''})),big:0,moves:[],deaths:[],hatches:[],unhatched:[],sales:[],adjustments:[]}
+}
+
 function load(){
  try{
   const d=JSON.parse(localStorage.getItem(KEY));
@@ -225,6 +229,7 @@ function load(){
  }catch(e){}
  return fresh();
 }
+
 let data=load(),selected='N001',draftEgg=0,draftChick=0,hatchQty=0,unhatchedQty=0;
 const $=id=>document.getElementById(id);
 const box=id=>data.boxes.find(b=>b.id===id);
@@ -237,31 +242,78 @@ const totalSold=()=>data.sales.reduce((s,d)=>s+(Number(d.qty)||0),0);
 const totalHatched=()=>data.hatches.reduce((s,d)=>s+(Number(d.qty)||0),0);
 const activeBoxes=()=>data.boxes.filter(b=>b.eggs>0||b.n>0);
 const stamp=()=>new Date().toLocaleString('ms-MY');
-function save(){localStorage.setItem(KEY,JSON.stringify(data));render()}
-function safe(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+
+function save(){
+ localStorage.setItem(KEY,JSON.stringify(data));
+ render();
+}
+
+function safe(v){
+ return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
 function render(){
  const eggs=totalEggs(),bc=totalBoxChicks(),big=data.big,live=bc+big,dead=totalDead();
  const active=activeBoxes().length,eggBoxes=data.boxes.filter(b=>b.eggs>0).length,chickBoxes=data.boxes.filter(b=>b.n>0).length,both=data.boxes.filter(b=>b.eggs>0&&b.n>0).length;
  const deathPct=live+dead?dead/(live+dead)*100:0;
  const unhatched=totalUnhatched(),hatched=totalHatched(),outcomes=unhatched+hatched,unhatchedPct=outcomes?unhatched/outcomes*100:0;
- $('sEggs').textContent=eggs;$('sChicks').textContent=bc;$('sBig').textContent=big;$('sActive').textContent=active+' / 60';
- $('aActive').textContent=active;$('aPercent').textContent=(active/60*100).toFixed(1)+'%';
+
+ $('sEggs').textContent=eggs;
+ $('sChicks').textContent=bc;
+ $('sBig').textContent=big;
+ $('sActive').textContent=active+' / 60';
+
+ $('aActive').textContent=active;
+ $('aPercent').textContent=(active/60*100).toFixed(1)+'%';
  $('aEggAvg').textContent=eggBoxes?(eggs/eggBoxes).toFixed(2):'0.00';
  $('aChickAvg').textContent=chickBoxes?(bc/chickBoxes).toFixed(2):'0.00';
- $('aEggBoxes').textContent=eggBoxes;$('aChickBoxes').textContent=chickBoxes;$('aBoth').textContent=both;
- $('aLive').textContent=live;$('aDead').textContent=dead;$('aDeathPct').textContent=deathPct.toFixed(1)+'%';$('aDeathLabel').textContent=deathPct.toFixed(1)+'%';
- $('aDeathBar').style.width=Math.min(100,deathPct)+'%';$('aTotalLive').textContent=live;$('aTotalEggs').textContent=eggs;
- $('aUnhatched').textContent=unhatched;$('aUnhatchedPct').textContent=unhatchedPct.toFixed(1)+'%';$('aHatched').textContent=hatched;$('aOutcomes').textContent=outcomes;
+ $('aEggBoxes').textContent=eggBoxes;
+ $('aChickBoxes').textContent=chickBoxes;
+ $('aBoth').textContent=both;
+ $('aLive').textContent=live;
+ $('aDead').textContent=dead;
+ $('aDeathPct').textContent=deathPct.toFixed(1)+'%';
+ $('aDeathLabel').textContent=deathPct.toFixed(1)+'%';
+ $('aDeathBar').style.width=Math.min(100,deathPct)+'%';
+ $('aTotalLive').textContent=live;
+ $('aTotalEggs').textContent=eggs;
+ $('aUnhatched').textContent=unhatched;
+ $('aUnhatchedPct').textContent=unhatchedPct.toFixed(1)+'%';
+ $('aHatched').textContent=hatched;
+ $('aOutcomes').textContent=outcomes;
+
  $('boxgrid').innerHTML=data.boxes.map(b=>`<button class="boxbtn ${b.eggs||b.n?'has':''} ${b.id===selected?'sel':''}" data-id="${b.id}"><strong>${b.id}</strong><span>${b.eggs}T · ${b.n}A</span></button>`).join('');
  document.querySelectorAll('[data-id]').forEach(el=>el.onclick=()=>selectBox(el.dataset.id));
- $('boxTitle').textContent='Kotak '+selected;$('eggNum').textContent=draftEgg;$('chickNum').textContent=draftChick;$('hatchNum').textContent=hatchQty;$('unhatchedNum').textContent=unhatchedQty;
- $('fromBox').innerHTML=data.boxes.map(b=>`<option value="${b.id}">${b.id} (${b.n} anak)</option>`).join('');
- $('deathBox').innerHTML=data.boxes.map(b=>`<option value="${b.id}">${b.id} (${b.n} anak)</option>`).join('');
- $('fromAvailable').textContent='Anak tersedia dalam kotak: '+box($('fromBox').value||'N001').n;
+
+ $('boxTitle').textContent='Kotak '+selected;
+ $('eggNum').textContent=draftEgg;
+ $('chickNum').textContent=draftChick;
+ $('hatchNum').textContent=hatchQty;
+ $('unhatchedNum').textContent=unhatchedQty;
+
+ // PEMBETULAN: simpan pilihan kotak sebelum dropdown dibina semula.
+ const fromSelect=$('fromBox');
+ const savedFrom=fromSelect.value || 'N001';
+
+ fromSelect.innerHTML=data.boxes.map(b=>
+  `<option value="${b.id}">${b.id} (${b.n} anak)</option>`
+ ).join('');
+
+ // Pulihkan pilihan asal supaya tidak kembali ke N001 setiap kali render().
+ fromSelect.value=box(savedFrom)?savedFrom:'N001';
+
+ $('deathBox').innerHTML=data.boxes.map(b=>
+  `<option value="${b.id}">${b.id} (${b.n} anak)</option>`
+ ).join('');
+
+ $('fromAvailable').textContent=
+  'Anak tersedia dalam kotak: '+box(fromSelect.value).n;
+
  $('bigNum').textContent=big;
  $('bigDeathsTotal').textContent=totalBigDead();
  $('soldTotal').textContent=totalSold();
  $('saleAvailable').textContent='Anak tersedia dalam sarang besar: '+big;
+
  const events=[
   ...data.moves.map(x=>({...x,type:'Pindah'})),
   ...data.deaths.map(x=>({...x,type:'Kematian'})),
@@ -270,62 +322,121 @@ function render(){
   ...data.sales.map(x=>({...x,type:'Keluaran jualan'})),
   ...data.adjustments.map(x=>({...x,type:'Pembetulan'}))
  ].sort((a,b)=>(b.ts||0)-(a.ts||0));
- $('historyList').innerHTML=events.length?events.map(x=>`<div class="item"><strong>${safe(x.type)}: ${safe(x.description||((x.qty||'')+' '+(x.from||x.location||'')))}</strong><br><small>${safe(x.date||'')}</small></div>`).join(''):'<p class="hint">Belum ada sejarah.</p>';
+
+ $('historyList').innerHTML=events.length?events.map(x=>
+  `<div class="item"><strong>${safe(x.type)}: ${safe(x.description||((x.qty||'')+' '+(x.from||x.location||'')))}</strong><br><small>${safe(x.date||'')}</small></div>`
+ ).join(''):'<p class="hint">Belum ada sejarah.</p>';
+
  $('unhatchedPlus').disabled=unhatchedQty>=box(selected).eggs;
  $('unhatchedMinus').disabled=unhatchedQty<=0;
 }
-function selectBox(id){selected=id;draftEgg=box(id).eggs;draftChick=box(id).n;hatchQty=0;unhatchedQty=0;$('note').value=box(id).note||'';render()}
+
+function selectBox(id){
+ selected=id;
+ draftEgg=box(id).eggs;
+ draftChick=box(id).n;
+ hatchQty=0;
+ unhatchedQty=0;
+ $('note').value=box(id).note||'';
+ render();
+}
+
 document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{
  document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x===t));
  document.querySelectorAll('.panel').forEach(x=>x.classList.toggle('active',x.id==='panel-'+t.dataset.tab));
 });
+
 $('eggMinus').onclick=()=>{draftEgg=Math.max(0,draftEgg-1);render()};
 $('eggPlus').onclick=()=>{draftEgg=Math.min(999,draftEgg+1);render()};
 $('chickMinus').onclick=()=>{draftChick=Math.max(0,draftChick-1);render()};
 $('chickPlus').onclick=()=>{draftChick=Math.min(999,draftChick+1);render()};
+
 $('saveBox').onclick=()=>{
- box(selected).eggs=draftEgg;box(selected).n=draftChick;box(selected).note=$('note').value.trim();
- hatchQty=Math.min(hatchQty,draftEgg);unhatchedQty=Math.min(unhatchedQty,draftEgg);
- save();alert('Rekod '+selected+' disimpan.');
+ box(selected).eggs=draftEgg;
+ box(selected).n=draftChick;
+ box(selected).note=$('note').value.trim();
+ hatchQty=Math.min(hatchQty,draftEgg);
+ unhatchedQty=Math.min(unhatchedQty,draftEgg);
+ save();
+ alert('Rekod '+selected+' disimpan.');
 };
+
 $('hatchMinus').onclick=()=>{hatchQty=Math.max(0,hatchQty-1);render()};
 $('hatchPlus').onclick=()=>{hatchQty=Math.min(box(selected).eggs,hatchQty+1);render()};
+
 $('recordHatch').onclick=()=>{
  const b=box(selected);
  if(hatchQty<1)return alert('Pilih bilangan telur yang menetas.');
  if(hatchQty>b.eggs)return alert('Telur tidak mencukupi.');
  if(!confirm('Rekod '+hatchQty+' telur menetas dalam '+selected+'?'))return;
- b.eggs-=hatchQty;b.n+=hatchQty;
+ b.eggs-=hatchQty;
+ b.n+=hatchQty;
  data.hatches.push({date:stamp(),ts:Date.now(),qty:hatchQty,from:selected,description:hatchQty+' telur menetas dalam '+selected});
- draftEgg=b.eggs;draftChick=b.n;hatchQty=0;unhatchedQty=Math.min(unhatchedQty,b.eggs);save();alert('Rekod penetasan disimpan.');
+ draftEgg=b.eggs;
+ draftChick=b.n;
+ hatchQty=0;
+ unhatchedQty=Math.min(unhatchedQty,b.eggs);
+ save();
+ alert('Rekod penetasan disimpan.');
 };
+
 $('unhatchedMinus').onclick=()=>{unhatchedQty=Math.max(0,unhatchedQty-1);render()};
 $('unhatchedPlus').onclick=()=>{unhatchedQty=Math.min(box(selected).eggs,unhatchedQty+1);render()};
+
 $('recordUnhatched').onclick=()=>{
  const b=box(selected);
  if(unhatchedQty<1)return alert('Pilih bilangan telur tak menetas.');
  if(unhatchedQty>b.eggs)return alert('Telur tidak mencukupi dalam kotak ini.');
  if(!confirm('Rekod '+unhatchedQty+' telur tak menetas dalam '+selected+'?'))return;
  data.unhatched.push({date:stamp(),ts:Date.now(),qty:unhatchedQty,from:selected,description:unhatchedQty+' telur tak menetas dalam '+selected});
- b.eggs-=unhatchedQty;draftEgg=b.eggs;unhatchedQty=0;hatchQty=Math.min(hatchQty,b.eggs);save();alert('Rekod telur tak menetas disimpan.');
+ b.eggs-=unhatchedQty;
+ draftEgg=b.eggs;
+ unhatchedQty=0;
+ hatchQty=Math.min(hatchQty,b.eggs);
+ save();
+ alert('Rekod telur tak menetas disimpan.');
 };
-$('fromBox').onchange=()=>{render()};
+
+// PEMBETULAN: apabila kotak dipilih, kemas kini baki sahaja.
+// Jangan panggil render() di sini kerana ia membina semula dropdown.
+$('fromBox').onchange=()=>{
+ const id=$('fromBox').value;
+ $('fromAvailable').textContent='Anak tersedia dalam kotak: '+box(id).n;
+};
+
 $('doMove').onclick=()=>{
- const id=$('fromBox').value,b=box(id),q=Math.floor(Number($('moveQty').value));
+ const id=$('fromBox').value;
+ const b=box(id);
+ const q=Math.floor(Number($('moveQty').value));
+
  if(!Number.isFinite(q)||q<1)return alert('Masukkan bilangan anak yang sah.');
  if(q>b.n)return alert('Bilangan anak tidak mencukupi dalam '+id+'.');
  if(!confirm('Pindahkan '+q+' anak dari '+id+' ke sarang besar?'))return;
- b.n-=q;data.big+=q;
+
+ b.n-=q;
+ data.big+=q;
  data.moves.push({date:stamp(),ts:Date.now(),qty:q,from:id,description:q+' anak dipindahkan dari '+id+' ke sarang besar'});
+
  if(selected===id)draftChick=b.n;
- save();alert('Pemindahan berjaya direkodkan.');
+
+ save();
+ alert('Pemindahan berjaya direkodkan.');
 };
+
 $('bigMinus').onclick=()=>{
  if(data.big<1)return alert('Tiada anak untuk dikurangkan.');
  if(!confirm('Kurangkan 1 anak daripada sarang besar?'))return;
- data.big--;data.adjustments.push({date:stamp(),ts:Date.now(),description:'Pembetulan sarang besar: −1 anak'});save();
+ data.big--;
+ data.adjustments.push({date:stamp(),ts:Date.now(),description:'Pembetulan sarang besar: −1 anak'});
+ save();
 };
-$('bigPlus').onclick=()=>{data.big++;data.adjustments.push({date:stamp(),ts:Date.now(),description:'Pembetulan sarang besar: +1 anak'});save()};
+
+$('bigPlus').onclick=()=>{
+ data.big++;
+ data.adjustments.push({date:stamp(),ts:Date.now(),description:'Pembetulan sarang besar: +1 anak'});
+ save();
+};
+
 $('recordSale').onclick=()=>{
  const q=Math.floor(Number($('saleQty').value));
  if(!Number.isFinite(q)||q<1)return alert('Masukkan bilangan anak untuk jualan yang sah.');
@@ -337,76 +448,166 @@ $('recordSale').onclick=()=>{
  $('saleQty').value=1;
  alert('Keluaran jualan direkodkan. Baki anak dalam sarang besar telah dikemas kini.');
 };
-$('deathLoc').onchange=()=>{$('deathBoxField').style.display=$('deathLoc').value==='box'?'block':'none'};
+
+$('deathLoc').onchange=()=>{
+ $('deathBoxField').style.display=$('deathLoc').value==='box'?'block':'none';
+};
+
 $('recordDeath').onclick=()=>{
- const loc=$('deathLoc').value,q=Math.floor(Number($('deathQty').value));
+ const loc=$('deathLoc').value;
+ const q=Math.floor(Number($('deathQty').value));
  if(!Number.isFinite(q)||q<1)return alert('Masukkan bilangan anak mati yang sah.');
- const id=$('deathBox').value,target=loc==='big'?null:box(id),available=loc==='big'?data.big:target.n;
+
+ const id=$('deathBox').value;
+ const target=loc==='big'?null:box(id);
+ const available=loc==='big'?data.big:target.n;
+
  if(q>available)return alert('Bilangan anak tidak mencukupi di lokasi tersebut.');
+
  const place=loc==='big'?'sarang besar':id;
  if(!confirm('Rekod '+q+' anak mati di '+place+'?'))return;
- if(loc==='big')data.big-=q;else target.n-=q;
+
+ if(loc==='big')data.big-=q;
+ else target.n-=q;
+
  data.deaths.push({date:stamp(),ts:Date.now(),qty:q,location:loc==='big'?'sarang besar':id,description:q+' anak mati di '+place});
+
  if(loc==='box'&&selected===id)draftChick=target.n;
- save();alert('Kematian direkodkan.');
+
+ save();
+ alert('Kematian direkodkan.');
 };
+
 function download(name,content,type){
- const blob=new Blob([content],{type}),url=URL.createObjectURL(blob),a=document.createElement('a');
- a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);
+ const blob=new Blob([content],{type});
+ const url=URL.createObjectURL(blob);
+ const a=document.createElement('a');
+ a.href=url;
+ a.download=name;
+ document.body.appendChild(a);
+ a.click();
+ a.remove();
+ setTimeout(()=>URL.revokeObjectURL(url),1000);
 }
+
 $('exportJson').onclick=()=>{
  const backup={...data,headerPhoto:localStorage.getItem(PHOTO_KEY)||''};
  download('backup-lestari-aviary-'+new Date().toISOString().slice(0,10)+'.json',JSON.stringify(backup,null,2),'application/json');
 };
+
 $('exportCsv').onclick=()=>{
  const rows=[['Kotak','Telur','Anak','Catatan','Jumlah telur tak menetas direkodkan'],...data.boxes.map(b=>[b.id,b.eggs,b.n,b.note,data.unhatched.filter(x=>x.from===b.id).reduce((s,x)=>s+(Number(x.qty)||0),0)])];
  download('lestari-aviary-kotak.csv',rows.map(r=>r.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(',')).join('\r\n'),'text/csv;charset=utf-8');
 };
+
 $('importFile').onchange=async e=>{
- const f=e.target.files[0];if(!f)return;
+ const f=e.target.files[0];
+ if(!f)return;
+
  try{
   const d=JSON.parse(await f.text());
   if(!Array.isArray(d.boxes)||d.boxes.length!==60||!Array.isArray(d.moves))throw Error();
   if(!confirm('Pulihkan backup dan gantikan data semasa?'))return;
-  data={version:5,boxes:d.boxes.map((b,i)=>({id:IDS[i],n:Math.max(0,Number(b.n)||0),eggs:Math.max(0,Number(b.eggs)||0),note:String(b.note||'')})),big:Math.max(0,Number(d.big)||0),moves:d.moves,deaths:Array.isArray(d.deaths)?d.deaths:[],hatches:Array.isArray(d.hatches)?d.hatches:[],unhatched:Array.isArray(d.unhatched)?d.unhatched:[],sales:Array.isArray(d.sales)?d.sales:[],adjustments:Array.isArray(d.adjustments)?d.adjustments:[]};
+
+  data={
+   version:5,
+   boxes:d.boxes.map((b,i)=>({id:IDS[i],n:Math.max(0,Number(b.n)||0),eggs:Math.max(0,Number(b.eggs)||0),note:String(b.note||'')})),
+   big:Math.max(0,Number(d.big)||0),
+   moves:d.moves,
+   deaths:Array.isArray(d.deaths)?d.deaths:[],
+   hatches:Array.isArray(d.hatches)?d.hatches:[],
+   unhatched:Array.isArray(d.unhatched)?d.unhatched:[],
+   sales:Array.isArray(d.sales)?d.sales:[],
+   adjustments:Array.isArray(d.adjustments)?d.adjustments:[]
+  };
+
   if(typeof d.headerPhoto==='string'&&d.headerPhoto.startsWith('data:image/'))localStorage.setItem(PHOTO_KEY,d.headerPhoto);
   showBrandPhoto(localStorage.getItem(PHOTO_KEY)||'');
-  selected='N001';draftEgg=box(selected).eggs;draftChick=box(selected).n;hatchQty=0;unhatchedQty=0;$('note').value=box(selected).note||'';save();alert('Backup dipulihkan.');
- }catch(err){alert('Fail backup tidak sah atau rosak.')}
+  selected='N001';
+  draftEgg=box(selected).eggs;
+  draftChick=box(selected).n;
+  hatchQty=0;
+  unhatchedQty=0;
+  $('note').value=box(selected).note||'';
+  save();
+  alert('Backup dipulihkan.');
+ }catch(err){
+  alert('Fail backup tidak sah atau rosak.');
+ }
  e.target.value='';
 };
+
 $('clearHistory').onclick=()=>{
  if(!confirm('Kosongkan sejarah sahaja? Kiraan telur dan anak tidak berubah. Rekod sejarah menetas dan telur tak menetas akan turut dibuang, jadi statistik terkumpulnya akan kembali sifar.'))return;
- data.moves=[];data.deaths=[];data.hatches=[];data.unhatched=[];data.sales=[];data.adjustments=[];save();
+ data.moves=[];
+ data.deaths=[];
+ data.hatches=[];
+ data.unhatched=[];
+ data.sales=[];
+ data.adjustments=[];
+ save();
 };
+
 $('resetAll').onclick=()=>{
  if(!confirm('AMARAN: Padam semua rekod telur, anak, sarang besar dan sejarah?'))return;
  if(!confirm('Pengesahan terakhir. Pastikan backup sudah dibuat.'))return;
- data=fresh();selected='N001';draftEgg=draftChick=hatchQty=unhatchedQty=0;save();alert('Data dikosongkan.');
+ data=fresh();
+ selected='N001';
+ draftEgg=draftChick=hatchQty=unhatchedQty=0;
+ save();
+ alert('Data dikosongkan.');
 };
+
 function showBrandPhoto(src){
  const el=$('brandPhoto');
  if(src){el.src=src}else{el.removeAttribute('src')}
 }
+
 $('brandPhoto').onclick=()=>$('brandPhotoInput').click();
+
 $('brandPhotoInput').onchange=async e=>{
- const file=e.target.files&&e.target.files[0];if(!file)return;
+ const file=e.target.files&&e.target.files[0];
+ if(!file)return;
  if(!file.type.startsWith('image/')){alert('Sila pilih fail gambar.');e.target.value='';return}
+
  try{
-  const src=await new Promise((resolve,reject)=>{const r=new FileReader();r.onload=()=>resolve(r.result);r.onerror=reject;r.readAsDataURL(file)});
-  const img=new Image();img.src=src;
+  const src=await new Promise((resolve,reject)=>{
+   const r=new FileReader();
+   r.onload=()=>resolve(r.result);
+   r.onerror=reject;
+   r.readAsDataURL(file);
+  });
+
+  const img=new Image();
+  img.src=src;
   await new Promise((resolve,reject)=>{img.onload=resolve;img.onerror=reject});
+
   const scale=Math.min(1,500/Math.max(img.width,img.height));
-  const canvas=document.createElement('canvas');canvas.width=Math.max(1,Math.round(img.width*scale));canvas.height=Math.max(1,Math.round(img.height*scale));
+  const canvas=document.createElement('canvas');
+  canvas.width=Math.max(1,Math.round(img.width*scale));
+  canvas.height=Math.max(1,Math.round(img.height*scale));
   canvas.getContext('2d').drawImage(img,0,0,canvas.width,canvas.height);
+
   const compressed=canvas.toDataURL('image/jpeg',0.75);
-  try{localStorage.setItem(PHOTO_KEY,compressed);showBrandPhoto(compressed);alert('Gambar header berjaya disimpan. Buat backup JSON untuk menyimpan salinan gambar.')}
-  catch(storageError){alert('Storan pelayar penuh. Buat backup dan cuba gambar yang lebih kecil.')}
- }catch(err){alert('Gambar tidak dapat dibaca. Cuba pilih gambar lain.')}
+
+  try{
+   localStorage.setItem(PHOTO_KEY,compressed);
+   showBrandPhoto(compressed);
+   alert('Gambar header berjaya disimpan. Buat backup JSON untuk menyimpan salinan gambar.');
+  }catch(storageError){
+   alert('Storan pelayar penuh. Buat backup dan cuba gambar yang lebih kecil.');
+  }
+ }catch(err){
+  alert('Gambar tidak dapat dibaca. Cuba pilih gambar lain.');
+ }
  e.target.value='';
 };
+
 showBrandPhoto(localStorage.getItem(PHOTO_KEY)||'');
-draftEgg=box(selected).eggs;draftChick=box(selected).n;$('note').value=box(selected).note||'';render();
+draftEgg=box(selected).eggs;
+draftChick=box(selected).n;
+$('note').value=box(selected).note||'';
+render();
 </script>
 </body>
 </html>
